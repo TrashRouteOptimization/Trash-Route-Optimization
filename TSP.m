@@ -1,4 +1,5 @@
 %% Draw the Map and Stops
+% michael commented this
 % change 2
 % figure;
 % 
