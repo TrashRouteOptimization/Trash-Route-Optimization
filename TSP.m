@@ -1,11 +1,6 @@
 %% Draw the Map and Stops
-% michael commented this
-% michael commented this 2
-% dustin commented this 
-% dustin commented this 2
-% change 2
 % figure;
-% 
+%
 % load('usborder.mat','x','y','xx','yy');
 % rng(3,'twister') % makes a plot with stops in Maine & Florida, and is reproducible
 m=5; %number of salemen/vehicles
@@ -41,7 +36,7 @@ dist=zeros(length(idxs),1);
 for i=1:length(idxs)
     dist(i)=DATA(idxs(i,1),idxs(i,2));
 end
-     
+
 lendist = length(dist);
 
 %%% Create Variables and Problem
