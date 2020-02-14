@@ -33,7 +33,7 @@ for i=1:238
         end
     end
 end
-%url='https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=33.418915585739%2c-111.93472391278&destinations=33.4214189471555%2C-111.929466806895&key=AIzaSyDBtFlE8EOUwhsOMEYLHY6mjkH-sQYbHnc';
+%url='https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=33.418915585739%2c-111.93472391278&destinations=33.4214189471555%2C-111.929466806895&key=';
 %options=weboptions('ContentType','auto');
 %data=webread(url,options);
 
