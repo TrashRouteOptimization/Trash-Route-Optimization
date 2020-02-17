@@ -93,7 +93,7 @@ totaltrips=length(routes);
                 [row,col,val]=find(routes==1);
                 routeX(1,:)=routes(row(1),:);
             else
-                [row,col,val]=find(routes==routeX(count-1,2);
+                [row,col,val]=find(routes==routeX(count-1,2));
                 routeX(count,:)=routes(row(1),:);
                 if routeX(count,1)~=routeX(count-1,2)
                     routeX(count,:)=[routeX(count,2),routeX(count,1)];
@@ -135,11 +135,87 @@ tsp.Constraints.conspickupsmin = conspickupsmin>=33;% K from paper constraints
 tsp.Constraints.conspickupsmax = conspickupsmax<=63;% L from paper constraints
 
 routesvector=[route1;route2;route3;route4;route5];
-for order=1:totaltrips
-    u(order)=
+u=zeros(totaltrips,1);
+u(1)=1;
+cnt2=1; cnt3=1; cnt4=1; cnt5=1;
+for order=2:totaltrips
+    if 1<order<length(route1)+1
+        uorder=routesvector(order,1);
+        u(uorder)=order;
+    elseif length(route1)<order<length(route1)+length(route2)+1
+        uorder=routesvector(order,1);
+        u(uorder)=cnt2;
+        cnt2=cnt2+1;
+    elseif length(route2)<order<length(route1)+length(route2)+length(route3)+1
+        uorder=routesvector(order,1);
+        u(uorder)=cnt3;
+        cnt3=cnt3+1;
+    elseif length(route3)<order<length(route1)+length(route2)+length(route3)+length(route4)+1
+        uorder=routesvector(order,1);
+        u(uorder)=cnt4;
+        cnt4=cnt4+1;
+    elseif length(route4)<order<length(route1)+length(route2)+length(route3)+length(route4)+length(route5)+1
+        uorder=routesvector(order,1);
+        u(uorder)=cnt5;
+        cnt5=cnt5+1;
+    end
+end
+        
+L=conspickupsmax;
+K=conspickupsmin;
 
 
-tsp.Constraints.cons
+firsttrips=[route1(1,:);route2(1,:);route3(1,:);route4(1,:);route5(1,:)];
+lasttrips=[route1(length(route1),:);route2(length(route2),:);route3(length(route3),:);route4(length(route4),:);route5(length(route5),:)];
+%firstlastrows=[firsttrips(:,2);lasttrips(:,1)];
+%constrtrips = optimconstr(nStops,1);
+consmax=optimconstr(nstops-1,1);
+consmin=optimconstr(nstops-1,1);
+for maxpts=2:nstops
+    [xonei,col,val]=find(firsttrips==maxpts);
+    [xione,col,val]=find(lasttrips==maxpts);
+    if 0<xonei<240
+        xonei=1;
+    else
+        xonei=0;
+    end
+    if 0<xione<240
+        xione=1;
+    else
+        xione=0;
+    end
+    consmax(maxpts-1)=u(maxpts)+(L-2)*xonei-xione;
+    consmin(maxpts-1)=u(maxpts)+xonei+(2-K)*xione;
+end
+tsp.Constraints.consmax=consmax<=L-1;
+tsp.Constraints.consmin=consmin>=2;
+
+
+conSECs=optimconstr(nstops-1,nstops);
+
+for ii=2:nstops
+    for jj=1:nstops
+        if i~=j
+            xij=find(routesvector(:,1)==ii & routesvector(:,2)==jj);
+            xji=find(routesvector(:,2)==ii & routesvector(:,1)==jj);
+            if isempty(xij)==1
+                xij=0;
+            else
+                xij=1;
+            end
+            if isempty(xji)==1
+                xji=0;
+            else
+                xji=1;
+            end
+            conSECs(ii-1,jj)=u(ii)-u(jj)+L*xij+(L-2)*xji;
+        end
+    end
+end
+ 
+
+tsp.Constraints.conSECs=conSECs<=L-1;
+
 
 %%% Solve the Initial Problem
 opts = optimoptions('intlinprog','Display','off');
