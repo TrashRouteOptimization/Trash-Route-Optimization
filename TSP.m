@@ -56,8 +56,6 @@ for stops = 1:nStops
         whichIdxs = any(whichIdxs,2); 
         constrtrips(stops) = sum(trips(whichIdxs)) == 2*m;
         
-        
-        
     else
         whichIdxs = (idxs == stops);
         whichIdxs = any(whichIdxs,2); % one trip to and from each DL node
@@ -67,24 +65,29 @@ end
 tsp.Constraints.constrtrips = constrtrips;
 
 
-consorder=zeros(length(sum(trips)),2);
+%consorder=zeros(length(sum(trips)),2);
 
 
-routes=zeros(length(sum(trips)),2); 
+routes=[];%zeros(length(sum(trips)),2); 
 j=1;
-for numpaths=1:m
+for pairs=1:length(trips)
+    if trips(pairs)==1
+        routes(j,:)=[idxs(pairs,1),idxs(pairs,2)];
+        j=j+1;
+    end
+end
+origroutes=routes;
+totaltrips=length(routes);       
+     for numpaths=1:m
     
     %while 
         
-        for order=1:length(trips)
-            if trips(order)==1
-                routes(j,:)=[idxs(order,1),idxs(order,2)];
-                j=j+1;
-            end
-        end
+
         
         %numnodes
-        while routeX(count,2)~=1
+        count=1;
+        routeX=[];
+        while routeX(count,2)~=1 || routeX==[]
             %for numnodes=1:length(DATA)
             if count==1
                 [row,col,val]=find(routes==1);
@@ -124,8 +127,19 @@ for numpaths=1:m
     end
    numpaths=numpaths+1; 
 end
-tsp.Constraints.consorder = consorder;
+numpickups=[length(route1),length(route2),length(route3),length(route4),length(route5)];
+conspickupsmin=min(numpickups);
+conspickupsmax=max(numpickups);
 
+tsp.Constraints.conspickupsmin = conspickupsmin>=33;% K from paper constraints
+tsp.Constraints.conspickupsmax = conspickupsmax<=63;% L from paper constraints
+
+routesvector=[route1;route2;route3;route4;route5];
+for order=1:totaltrips
+    u(order)=
+
+
+tsp.Constraints.cons
 
 %%% Solve the Initial Problem
 opts = optimoptions('intlinprog','Display','off');
