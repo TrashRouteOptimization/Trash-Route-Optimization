@@ -72,8 +72,9 @@ consorder=zeros(length(sum(trips)),2);
 
 routes=zeros(length(sum(trips)),2); 
 j=1;
-for i=1:m
-    while 
+for numpaths=1:m
+    
+    %while 
         
         for order=1:length(trips)
             if trips(order)==1
@@ -82,9 +83,47 @@ for i=1:m
             end
         end
         
-        for numnodes=1:length(DATA)
-            [row,col,val]=find(routes==numnodes);
+        %numnodes
+        while routeX(count,2)~=1
+            %for numnodes=1:length(DATA)
+            if count==1
+                [row,col,val]=find(routes==1);
+                routeX(1,:)=routes(row(1),:);
+            else
+                [row,col,val]=find(routes==routeX(count-1,2);
+                routeX(count,:)=routes(row(1),:);
+                if routeX(count,1)~=routeX(count-1,2)
+                    routeX(count,:)=[routeX(count,2),routeX(count,1)];
+                end
+                
+            end
+            count=count+1;
             
+        end
+    %end
+ 
+   if numpaths==1
+    route1=routeX;
+    elseif numpaths==2
+    route2=routeX;
+    elseif numpaths==3
+    route3=routeX;
+    elseif numpaths==4
+    route4=routeX;
+    elseif numpaths==5
+    route5=routeX;
+   end
+   
+   [row,col,val]=find(routes==1);
+   routes(row(1),:)=[];
+   [row,col,val]=find(routes==routeX(length(routeX),1));
+    if routes(row(1),1)==1
+        routes(row(1),:)=[];
+    else
+        routes(row(2),:)=[];
+    end
+   numpaths=numpaths+1; 
+end
 tsp.Constraints.consorder = consorder;
 
 
