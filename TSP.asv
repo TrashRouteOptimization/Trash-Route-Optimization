@@ -70,21 +70,17 @@ tsp.Constraints.constrtrips = constrtrips;
 consorder=zeros(length(sum(trips)),2);
 
 
-routes=zeros(length(sum(trips)),2); 
+routes=zeros(length(sum(trips)),2*m); 
 j=1;
 for i=1:m
     while 
         
         for order=1:length(trips)
             if trips(order)==1
-                routes(j,:)=[idxs(order,1),idxs(order,2)];
+                routes(j,2*i-1:2*i)=[idxs(order,1),idxs(order,2)];
                 j=j+1;
             end
         end
-        
-        for numnodes=1:length(DATA)
-            [row,col,val]=find(routes==numnodes);
-            
 tsp.Constraints.consorder = consorder;
 
 
