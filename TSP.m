@@ -5,8 +5,8 @@
 % rng(3,'twister') % makes a plot with stops in Maine & Florida, and is reproducible
 m=5; %number of salemen/vehicles
 
-DATA= readmatrix('Dual Litter Bins_Tempe_LatLong_Distance_Time.xlsx','Sheet','Distance','Range','A1:ID238');
-[Longitude, Latitude] = readvars('Dual Litter Bins_Tempe_LatLong_Distance_Time.xlsx','Sheet','Sheet2','Range','B6:C243');
+DATA= readmatrix('Dual Litter Bins_Tempe_LatLong_Distance Matrix with Compactors +Depot(1).xlsx','Sheet','Distance','Range','A1:IE239');
+[Longitude, Latitude] = readvars('Dual Litter Bins_Tempe_LatLong_Distance Matrix with Compactors +Depot(1).xlsx','Sheet','Sheet2','Range','B5:C243');
 nStops = length(DATA); % you can use any number, but the problem size scales as N^2
 % stopsLon = zeros(nStops,1); % allocate x-coordinates of nStops
 % stopsLat = stopsLon; % allocate y-coordinates
@@ -67,6 +67,45 @@ tsp.Constraints.constrtrips = constrtrips;
 
 %consorder=zeros(length(sum(trips)),2);
 
+%ATTEMPT TO FIX OPT VAR PROBLEM
+% routes=[];
+% aux = optimexpr(lendist); % Allocate aux
+% for idx=1:lendist
+% aux(idx)=trips(idx)*idx;
+% if aux(idx)~=0
+%     routes(j,:)=[idxs(idx,1),idxs(idx,2)];
+%     j=j+1;
+% end
+% end
+% routescons=sum(aux)==sum(trips);
+% tsp.Constraints.consroutes = routescons;
+
+
+
+%ATTEMPT TO FIX OPT VAR PROBLEM
+% idx = 1:(nPeriods-1);
+% w(idx,:) = y(idx+1,:,'Low') - y(idx,:,'Low') + y(idx+1,:,'High') - y(idx,:,'High');
+% w(nPeriods,:) = y(1,:,'Low') - y(nPeriods,:,'Low') + y(1,:,'High') - y(nPeriods,:,'High');
+% switchcons = w - z <= 0;
+
+%ATTEMPT TO FIX OPT VAR PROBLEM
+% routes=[];
+% rout=zeros(lendist,1);
+% for pairs=1:lendist
+%     rout(pairs)=trips(pairs)*pairs;
+% end
+% for pairs=1:lendist
+%     if rout(pairs)*pairs~=0
+%     routes(j,:)=[idxs(pairs,1),idxs(pairs,2)];
+%     j=j+1;
+%     end
+% end
+
+
+opts = optimoptions('intlinprog','Display','off');
+tspsol = solve(tsp,'options',opts)
+
+%% Not working constraints
 
 routes=[];%zeros(length(sum(trips)),2); 
 j=1;
@@ -76,6 +115,7 @@ for pairs=1:length(trips)
         j=j+1;
     end
 end
+
 origroutes=routes;
 totaltrips=length(routes);       
      for numpaths=1:m
@@ -195,7 +235,7 @@ conSECs=optimconstr(nstops-1,nstops);
 
 for ii=2:nstops
     for jj=1:nstops
-        if i~=j
+        if ii~=jj
             xij=find(routesvector(:,1)==ii & routesvector(:,2)==jj);
             xji=find(routesvector(:,2)==ii & routesvector(:,1)==jj);
             if isempty(xij)==1
