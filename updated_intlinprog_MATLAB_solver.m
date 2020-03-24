@@ -12,7 +12,7 @@ datanodes=[1,randperm(238,20)+ones(1,20)]; % row vector, must always start with 
 Long=Longitude(datanodes);
 Lat=Latitude(datanodes);
 
-nStops = length(datanodes); % you can use any number, but the problem size scales as N^2
+nStops = length(datanodes); % For full scale, use DATA instead of datanodes
 nDLs=nStops-1;
 
 
